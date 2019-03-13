@@ -101,8 +101,8 @@ class correlate_and_tag_py(gr.sync_block):
 
 
         """Internal Buffers"""
-        self.buffer = queue.Queue(maxsize=200000)
-        self.output = queue.Queue(maxsize=200000)
+        self.buffer = [] #queue.Queue(maxsize=200000)
+        self.output =  queue.Queue(maxsize=200000)
         self.corr_output = queue.Queue(maxsize=200000)
 
         """Internal States"""
@@ -122,7 +122,7 @@ class correlate_and_tag_py(gr.sync_block):
 
 
     def work(self, input_items, output_items):
-        self.debug = False
+        self.debug = True
 
         in0 = input_items[0]
         out = output_items[0]
@@ -139,11 +139,13 @@ class correlate_and_tag_py(gr.sync_block):
             print( "Size of input: {} \t output: {}-{} buffers".format(len(in0), len(out), len(corr_out)))
 
         """ Fill the internal buffer with incoming items """
-        for indx, sample in enumerate(input_items[0]):
+        """for indx, sample in enumerate(input_items[0]):
             self.buffer.put(sample)
+        """
+        self.buffer.extend(in0[:])
 
         if self.debug:
-            print( "Size of internal buffer: {}".format(self.buffer.qsize()))
+            print( "Size of internal buffer: {}".format(len(self.buffer)))
 
         # print "Size of output buffer: {}".format(len(out))
 
@@ -152,18 +154,22 @@ class correlate_and_tag_py(gr.sync_block):
         # correlation_window : items might be left after previous correlation
         # gold_seq_length
         # frame_length
-        if self.buffer.qsize() + len(self.correlation_window) > self.gold_seq_length + self.frame_length:
+        if len(self.buffer) + len(self.correlation_window) > self.gold_seq_length + self.frame_length:
             output_head = self.nitems_written(0)
             corr_output_head = self.nitems_written(1)
 
-            read_index = 0
             initial_size = len(self.correlation_window)
-            # Push items (samples) to correlation window
-            #   until its size equals gold_seq_length+frame_length
-            while read_index < self.gold_seq_length + self.frame_length - initial_size:
+            # Add items (samples) to correlation window
+            #   to make its size equals gold_seq_length+frame_length
+
+            item_size_to_add =  self.gold_seq_length + self.frame_length - initial_size
+            self.correlation_window.extend(self.buffer[:item_size_to_add])
+            self.buffer = self.buffer[item_size_to_add:]
+
+            """while read_index < self.gold_seq_length + self.frame_length - initial_size:
                 self.correlation_window.append(self.buffer.get())
                 read_index = read_index + 1
-
+            """
             """
             if self.debug:      
                 print(     "Remaining inputs in buffer: {} \n" \
@@ -191,8 +197,9 @@ class correlate_and_tag_py(gr.sync_block):
             # run cross correlation to detect peaks and
             # calculate CSI
             for tx_index in range(self.num_active_Tx):
-		self.debug = False			
-		if self.debug:	print(tx_index)
+                self.debug = False
+
+                if self.debug:	print(tx_index)
                 s_time = time.time()
                 x_cor_result = self.correlate(self.correlation_window, self.gold_sequences[tx_index])
                 e_time = time.time()
@@ -278,12 +285,12 @@ class correlate_and_tag_py(gr.sync_block):
             for tx_index in range(self.num_active_Tx):
                 if int(found_flags[tx_index]) == 1:
                     possible_delay = max_index - int(corr_indices[tx_index])
-		    if possible_delay < 100:
-			delays[tx_index] = possible_delay
-		    else:
-			delays[tx_index] = 0			
-		    print("Tx: {} Delay: {}".format(tx_index+1,  delays[tx_index]))
-                    #delays[tx_index] = 0
+                    if possible_delay < 100:
+                        delays[tx_index] = possible_delay
+                    else:
+                        delays[tx_index] = 0
+                print("Tx: {} Delay: {}".format(tx_index+1,  delays[tx_index]))
+                #delays[tx_index] = 0
 
             channel_estimations = []
             # Fill out feedback dictionary
@@ -331,6 +338,7 @@ class correlate_and_tag_py(gr.sync_block):
         return len(in0)
 
     def push_data(self, data_array, output_queue_name):
+        # np.concatenate((a, b), axis=None)
         if output_queue_name == "output":
             for e in data_array:
                 self.output.put(e)

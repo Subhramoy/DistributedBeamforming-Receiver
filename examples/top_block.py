@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Top Block
-# Generated: Wed Mar 13 09:48:17 2019
+# Generated: Wed Mar 13 12:13:37 2019
 ##################################################
 
 if __name__ == '__main__':
@@ -218,7 +218,7 @@ class top_block(gr.top_block, Qt.QWidget):
         self.blocks_repeat_0 = blocks.repeat(gr.sizeof_gr_complex*1, 400)
         self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
         self.beamforming_matlab_file_payload_py_0 = beamforming.matlab_file_payload_py(data_files_path + "/trainingSig1")
-        self.beamforming_correlate_and_tag_py_0 = beamforming.correlate_and_tag_py(trainingSignal_size, trainingSignal_size + 400 + 256* 64 + 100, 2, data_files_path + "/trainingSig", "")
+        self.beamforming_correlate_and_tag_py_0 = beamforming.correlate_and_tag_py(trainingSignal_size, trainingSignal_size + 400 + 256* 64 + 100, 1, data_files_path + "/trainingSig", "")
 
 
 
