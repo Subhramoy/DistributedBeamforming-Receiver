@@ -136,14 +136,14 @@ class correlate_and_tag_py(gr.sync_block):
         # print str(in0.flags)
 
         if self.debug:
-            self.log.debug( "Size of input: {} \t output: {}-{} buffers".format(len(in0), len(out), len(corr_out)))
+            print( "Size of input: {} \t output: {}-{} buffers".format(len(in0), len(out), len(corr_out)))
 
         """ Fill the internal buffer with incoming items """
         for indx, sample in enumerate(input_items[0]):
             self.buffer.put(sample)
 
         if self.debug:
-            self.log.debug( "2Size of internal buffer: {}".format(self.buffer.qsize()))
+            print( "Size of internal buffer: {}".format(self.buffer.qsize()))
 
         # print "Size of output buffer: {}".format(len(out))
 
@@ -166,7 +166,7 @@ class correlate_and_tag_py(gr.sync_block):
 
             """
             if self.debug:      
-                self.log.debug(     "Remaining inputs in buffer: {} \n" \
+                print(     "Remaining inputs in buffer: {} \n" \
                                      "Number of samples in Cor. window: {}\n"
                                 .format(
                                         self.buffer.qsize(),
@@ -191,15 +191,16 @@ class correlate_and_tag_py(gr.sync_block):
             # run cross correlation to detect peaks and
             # calculate CSI
             for tx_index in range(self.num_active_Tx):
-                print(tx_index)
+		self.debug = False			
+		if self.debug:	print(tx_index)
                 s_time = time.time()
                 x_cor_result = self.correlate(self.correlation_window, self.gold_sequences[tx_index])
                 e_time = time.time()
 
                 self.log.info("Xcorr calculation time: {} seconds".format(e_time - s_time))
-                print ("Xcorr calculation time: {} seconds".format(e_time - s_time))
+                # print ("Xcorr calculation time: {} seconds".format(e_time - s_time))
                 if self.debug:
-                    self.log.debug( "XCOR output type: {} \t size: {}".format(
+                    print( "XCOR output type: {} \t size: {}".format(
                                         type(x_cor_result),
                                         len(x_cor_result)))
 
@@ -210,7 +211,7 @@ class correlate_and_tag_py(gr.sync_block):
                 tag_index = numpy.argmax(numpy.absolute(x_cor_result))
                 peak_indices = self.get_peaks(x_cor_result)
 
-                self.log.debug("Tx: {} - Max item index: {}, First Peak index: {}".format(tx_index+1, tag_index, peak_indices[0] ))
+                print("Tx: {} - Max item index: {}, First Peak index: {}".format(tx_index+1, tag_index, peak_indices[0] ))
 
                 if peak_indices[0] > push_index:
                     push_index = peak_indices[0]
@@ -240,13 +241,14 @@ class correlate_and_tag_py(gr.sync_block):
                     # @todo if it is zero make it one
                     channel_state[tx_index] = numpy.nanmean(   numpy.divide(
                         self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq],
-                        self.gold_sequences[tx_index]
+                        self.gold_sequences[tx_index], out=numpy.zeros_like(self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq]), where=self.gold_sequences[tx_index]!=0
                     )           )
-                    self.log.debug("Tx: {} CSI: {}".format(tx_index+1, channel_state[tx_index] ))
+                    print("Tx: {} CSI: {}".format(tx_index+1, channel_state[tx_index] ))
 
                 else:
+                    self.debug = True
                     found_flags[tx_index] = 0
-                    self.log.debug("Could not correlate training signal {}".format(tx_index+1))
+                    print("Could not correlate training signal {}".format(tx_index+1))
 
                 # Create the TAGS
                 key_flow = pmt.intern("training_Sig_{}".format(tx_index+1))
@@ -270,13 +272,17 @@ class correlate_and_tag_py(gr.sync_block):
                                   , key_xcor, value_xcor)
 
 
-            max_index = numpy.max(corr_indices)
+            max_index = int(numpy.max(corr_indices))
 
             # Calculate the individual delay values
             for tx_index in range(self.num_active_Tx):
-                if found_flags[tx_index] == 1:
-                    delays[tx_index] = max_index - corr_indices[tx_index]
-                    self.log.debug("Tx: {} Delay: {}".format(tx_index+1,  delays[tx_index]))
+                if int(found_flags[tx_index]) == 1:
+                    possible_delay = max_index - int(corr_indices[tx_index])
+		    if possible_delay < 100:
+			delays[tx_index] = possible_delay
+		    else:
+			delays[tx_index] = 0			
+		    print("Tx: {} Delay: {}".format(tx_index+1,  delays[tx_index]))
                     #delays[tx_index] = 0
 
             channel_estimations = []
@@ -291,7 +297,7 @@ class correlate_and_tag_py(gr.sync_block):
                     }
                 )
 
-            self.log.debug(str(channel_estimations))
+            print("JSON: ".format(str(channel_estimations)))
             serialized = json.dumps(channel_estimations, indent=4)
             self.sock.sendto(serialized, self.multicast_group)
 
@@ -300,7 +306,7 @@ class correlate_and_tag_py(gr.sync_block):
             # Push one frame
             push_size = push_index + self.frame_length - self.gold_seq_length/2
 
-            if self.debug: self.log.debug( "Sample size pushed to output buffers: {}".format(push_size))
+            if self.debug: print( "Sample size pushed to output buffers: {}".format(push_size))
             self.push_data(self.correlation_window[:push_size], "output")
             self.push_data(x_cor_result[:push_size], "correlation_output")
 
@@ -320,7 +326,7 @@ class correlate_and_tag_py(gr.sync_block):
             corr_out[:] = self.pull_data(len(corr_out), "correlation_output")
 
         if self.debug:
-            self.log.debug( "Sizes of buffers\nout: {}, c_out: {}, in: {}".
+            print( "Sizes of buffers\nout: {}, c_out: {}, in: {}".
                             format(len(out), len(corr_out), len(in0)))
         return len(in0)
 
@@ -450,7 +456,7 @@ class correlate_and_tag_py(gr.sync_block):
     def forecast(self, noutput_items, ninput_items_required):
         
         if self.debug:
-            self.log.debug( "forecast noutput_items: {} \t " \
+            print( "forecast noutput_items: {} \t " \
                         "ninput_items_required: {}"\
                         .format(    noutput_items,
                                     len(ninput_items_required)))
@@ -460,7 +466,7 @@ class correlate_and_tag_py(gr.sync_block):
             ninput_items_required[i] = 6000
         
         if self.debug:
-            self.log.debug( "end of forecast " \
+            print( "end of forecast " \
                         "ninput_items_required: {}" \
                         .format( ninput_items_required[0]))
 
@@ -472,13 +478,13 @@ class correlate_and_tag_py(gr.sync_block):
 
         self.debug = False
         if self.debug:
-            self.log.debug( "Size of input: {} buffer".format(len(input_items[0])))
-            self.log.debug( "Size of input: {} \t output: {} buffers".format(len(in0), len(out)))
+            print( "Size of input: {} buffer".format(len(input_items[0])))
+            print( "Size of input: {} \t output: {} buffers".format(len(in0), len(out)))
 
         out[:] = in0
 
         if self.debug:
-            self.log.debug( "Call for consume function with parameter {}".format(len(input_items[0])))
+            print( "Call for consume function with parameter {}".format(len(input_items[0])))
         self.consume(0, len(input_items[0]))
         #self.consume_each(len(input_items[0]))
         return len(output_items[0])
