@@ -102,8 +102,8 @@ class correlate_and_tag_py(gr.sync_block):
 
         """Internal Buffers"""
         self.buffer = [] #queue.Queue(maxsize=200000)
-        self.output =  queue.Queue(maxsize=200000)
-        self.corr_output = queue.Queue(maxsize=200000)
+        self.output =  [] #queue.Queue(maxsize=200000)
+        self.corr_output = [] #queue.Queue(maxsize=200000)
 
         """Internal States"""
         self.delay = True
@@ -268,13 +268,13 @@ class correlate_and_tag_py(gr.sync_block):
                 # attach TAGS to the output streams
                 self.add_item_tag(0,
                                   output_head
-                                  + self.output.qsize() # Items waiting in output queue
+                                  + len(self.output) # Items waiting in output queue
                                   + peak_indices[0]
                                   - self.gold_seq_length/2
                                   , key_flow, value_flow)
 
                 self.add_item_tag(1, corr_output_head
-                                  + self.corr_output.qsize() # Items waiting in output queue
+                                  + len(self.corr_output) # Items waiting in output queue
                                   + peak_indices[0]
                                   , key_xcor, value_xcor)
 
@@ -314,9 +314,14 @@ class correlate_and_tag_py(gr.sync_block):
             push_size = push_index + self.frame_length - self.gold_seq_length/2
 
             if self.debug: print( "Sample size pushed to output buffers: {}".format(push_size))
+
+            self.output.extend(self.correlation_window[:push_size])
+            self.corr_output.extend(x_cor_result[:push_size])
+
+            """
             self.push_data(self.correlation_window[:push_size], "output")
             self.push_data(x_cor_result[:push_size], "correlation_output")
-
+            """
             self.correlation_window = self.correlation_window[push_size:]
 
 
@@ -326,11 +331,15 @@ class correlate_and_tag_py(gr.sync_block):
         # @todo delay and tag
         # corr_out[:] = numpy.ndarray(shape=(len(corr_out),),
         #                            dtype=numpy.complex64)[:len(corr_out)]
-        if self.output.qsize() > len(out):
-            out[:] =  self.pull_data(len(out), "output")
+        if len (self.output) > len(out):
+            out[:] = self.output[:len(out)]
+            self.output = self.output[len(out):]
+            # self.pull_data(len(out), "output")
 
-        if self.corr_output.qsize() > len(corr_out):
-            corr_out[:] = self.pull_data(len(corr_out), "correlation_output")
+        if len(self.corr_output) > len(corr_out):
+            corr_out[:] = self.corr_output[:len(out)]
+            self.corr_output = self.corr_output[len(out):]
+            # self.pull_data(len(corr_out), "correlation_output")
 
         if self.debug:
             print( "Sizes of buffers\nout: {}, c_out: {}, in: {}".
@@ -338,6 +347,7 @@ class correlate_and_tag_py(gr.sync_block):
         return len(in0)
 
     def push_data(self, data_array, output_queue_name):
+        print "NOOOooooooooooooooo"
         # np.concatenate((a, b), axis=None)
         if output_queue_name == "output":
             for e in data_array:
@@ -349,6 +359,8 @@ class correlate_and_tag_py(gr.sync_block):
             raise Exception("Undefined output queue.")
 
     def pull_data(self, length, output_queue_name):
+        print "NOOOooooooooooooooo"
+
         data_array = []
         index = 0
 
