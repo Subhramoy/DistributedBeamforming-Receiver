@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Airbeam Test
-# Generated: Wed Mar 13 11:01:07 2019
+# Generated: Wed Mar 13 16:40:10 2019
 ##################################################
 
 if __name__ == '__main__':
@@ -245,10 +245,10 @@ class airbeam_test(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
         self.qtgui_freq_sink_x_0_0_0_0.set_frequency_range(900e6, self.samp_rate)
         self.qtgui_time_sink_x_0_0_1_1_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_samp_rate(self.samp_rate)
+        self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
 
     def get_data_files_path(self):
         return self.data_files_path

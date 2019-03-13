@@ -122,7 +122,7 @@ class correlate_and_tag_py(gr.sync_block):
 
 
     def work(self, input_items, output_items):
-        self.debug = True
+        self.debug = False
 
         in0 = input_items[0]
         out = output_items[0]
@@ -227,6 +227,7 @@ class correlate_and_tag_py(gr.sync_block):
                 s_index_of_gold_seq = peak_indices[0] - self.gold_seq_length/2
                 e_index_of_gold_seq = s_index_of_gold_seq +  self.gold_seq_length
 
+#                if s_index_of_gold_seq >= 0 and e_index_of_gold_seq <= len(self.correlation_window):
                 if s_index_of_gold_seq >= 0 and e_index_of_gold_seq <= len(self.correlation_window):
                     corr_indices[tx_index] = s_index_of_gold_seq
                     found_flags[tx_index] = 1
@@ -285,7 +286,7 @@ class correlate_and_tag_py(gr.sync_block):
             for tx_index in range(self.num_active_Tx):
                 if int(found_flags[tx_index]) == 1:
                     possible_delay = max_index - int(corr_indices[tx_index])
-                    if possible_delay < 100:
+                    if possible_delay < 500:
                         delays[tx_index] = possible_delay
                     else:
                         delays[tx_index] = 0
@@ -304,7 +305,7 @@ class correlate_and_tag_py(gr.sync_block):
                     }
                 )
 
-            print("JSON: ".format(str(channel_estimations)))
+            print("JSON: {}".format(str(channel_estimations)))
             serialized = json.dumps(channel_estimations, indent=4)
             self.sock.sendto(serialized, self.multicast_group)
 
@@ -395,7 +396,7 @@ class correlate_and_tag_py(gr.sync_block):
     #
     def get_peaks(self, correlation_output):
 
-        self.debug = False
+        self.debug = True
         expected_distance = 100 # If the dist is greater than this, interpret as another cluster
 
         filtered_candidates = []
@@ -403,7 +404,7 @@ class correlate_and_tag_py(gr.sync_block):
 
         peak_candidates = numpy.nonzero(numpy.absolute(correlation_output) > max_samp*0.80)[0]
         if self.debug:
-            print("Values bigger than max*0.80 =", numpy.absolute(correlation_output)[numpy.absolute(correlation_output) > max_samp*0.95])
+            print("Values bigger than max*0.80 = ", numpy.absolute(correlation_output)[numpy.absolute(correlation_output) > max_samp*0.95])
             print("Their indices are ", peak_candidates)
 
         t_peak = None
@@ -412,7 +413,7 @@ class correlate_and_tag_py(gr.sync_block):
                 t_peak = candidate
 
             elif abs(candidate - t_peak) < expected_distance: # They are in the same cluster
-                if correlation_output[candidate] > correlation_output[t_peak]:
+                if numpy.absolute(correlation_output[candidate]) > numpy.absolute(correlation_output[t_peak]):
                     t_peak = candidate
             else:
                 # candidate belongs to a different cluster
@@ -425,6 +426,7 @@ class correlate_and_tag_py(gr.sync_block):
 
         if self.debug:            print("Candidates: {}", filtered_candidates)
 
+        self.debug = False
         return filtered_candidates
 
 
