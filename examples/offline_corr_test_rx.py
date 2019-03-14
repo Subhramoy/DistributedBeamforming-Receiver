@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
-# Title: Corr Test Rx
-# Generated: Thu Mar 14 09:09:58 2019
+# Title: Offline Corr Test Rx
+# Generated: Thu Mar 14 10:15:06 2019
 ##################################################
 
 if __name__ == '__main__':
@@ -31,12 +31,12 @@ import sys
 from gnuradio import qtgui
 
 
-class corr_test_rx(gr.top_block, Qt.QWidget):
+class offline_corr_test_rx(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Corr Test Rx")
+        gr.top_block.__init__(self, "Offline Corr Test Rx")
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Corr Test Rx")
+        self.setWindowTitle("Offline Corr Test Rx")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -54,7 +54,7 @@ class corr_test_rx(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "corr_test_rx")
+        self.settings = Qt.QSettings("GNU Radio", "offline_corr_test_rx")
         self.restoreGeometry(self.settings.value("geometry").toByteArray())
 
 
@@ -68,13 +68,15 @@ class corr_test_rx(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
+        self.zero_padding_0_0_0_1 = analog.sig_source_c(0, analog.GR_CONST_WAVE, 0, 0, 0.1-0.1j)
+        self.zero_padding_0_0_0_0_1 = analog.sig_source_c(0, analog.GR_CONST_WAVE, 0, 0, 0)
         self.zero_padding_0_0_0_0_0 = analog.sig_source_c(0, analog.GR_CONST_WAVE, 0, 0, 0)
         self.zero_padding_0_0_0_0 = analog.sig_source_c(0, analog.GR_CONST_WAVE, 0, 0, 0)
         self.zero_padding_0_0_0 = analog.sig_source_c(0, analog.GR_CONST_WAVE, 0, 0, 0.1-0.1j)
         self.qtgui_time_sink_x_0_0_1_1_0_0_1 = qtgui.time_sink_c(
         	200000, #size
         	samp_rate, #samp_rate
-        	'Tx Signal', #name
+        	'Retrieved Payload', #name
         	1 #number of inputs
         )
         self.qtgui_time_sink_x_0_0_1_1_0_0_1.set_update_time(0.10)
@@ -173,7 +175,7 @@ class corr_test_rx(gr.top_block, Qt.QWidget):
         self.qtgui_time_sink_x_0_0_1_1_0_0 = qtgui.time_sink_c(
         	200000, #size
         	samp_rate, #samp_rate
-        	'Tx Signal', #name
+        	'Rx Signal', #name
         	1 #number of inputs
         )
         self.qtgui_time_sink_x_0_0_1_1_0_0.set_update_time(0.10)
@@ -226,7 +228,7 @@ class corr_test_rx(gr.top_block, Qt.QWidget):
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
         	900e6, #fc
         	samp_rate, #bw
-        	'Tx Signal', #name
+        	'Rx Signal', #name
         	1 #number of inputs
         )
         self.qtgui_freq_sink_x_0_0_0_0.set_update_time(0.10)
@@ -267,15 +269,21 @@ class corr_test_rx(gr.top_block, Qt.QWidget):
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_tag_gate_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0.set_single_key("")
+        self.blocks_stream_mux_1_1 = blocks.stream_mux(gr.sizeof_gr_complex*1, (trainingSignal_size, 400 , 256* 64 , 100))
         self.blocks_stream_mux_1_0 = blocks.stream_mux(gr.sizeof_gr_complex*1, (1000 , 256* 64))
         self.blocks_stream_mux_1 = blocks.stream_mux(gr.sizeof_gr_complex*1, (trainingSignal_size, 400 , 256* 64 , 100))
+        self.blocks_repeat_0_2 = blocks.repeat(gr.sizeof_gr_complex*1, 400)
+        self.blocks_repeat_0_1_0 = blocks.repeat(gr.sizeof_gr_complex*1, 100)
         self.blocks_repeat_0_1 = blocks.repeat(gr.sizeof_gr_complex*1, 100)
+        self.blocks_repeat_0_0_0 = blocks.repeat(gr.sizeof_gr_complex*1, 256*64)
         self.blocks_repeat_0_0 = blocks.repeat(gr.sizeof_gr_complex*1, 256*64)
         self.blocks_repeat_0 = blocks.repeat(gr.sizeof_gr_complex*1, 400)
         self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
+        self.blocks_add_xx_0 = blocks.add_vcc(1)
+        self.beamforming_matlab_file_payload_py_0_0 = beamforming.matlab_file_payload_py(data_files_path + "/trainingSig2")
         self.beamforming_matlab_file_payload_py_0 = beamforming.matlab_file_payload_py(data_files_path + "/trainingSig1")
         self.beamforming_filter_payload_py_0 = beamforming.filter_payload_py('payload')
-        self.beamforming_correlate_and_tag_py_0 = beamforming.correlate_and_tag_py(trainingSignal_size, trainingSignal_size + 400 + 256* 64 + 100, 2, data_files_path + "/trainingSig", 0, 1)
+        self.beamforming_correlate_and_tag_py_0 = beamforming.correlate_and_tag_py(trainingSignal_size, trainingSignal_size + 400 + 256* 64 + 100, 2, data_files_path + "/trainingSig", 0, 0)
 
 
 
@@ -284,25 +292,34 @@ class corr_test_rx(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.beamforming_correlate_and_tag_py_0, 0), (self.beamforming_filter_payload_py_0, 0))
         self.connect((self.beamforming_correlate_and_tag_py_0, 1), (self.blocks_complex_to_mag_0, 0))
-        self.connect((self.beamforming_correlate_and_tag_py_0, 0), (self.blocks_throttle_0, 0))
+        self.connect((self.beamforming_correlate_and_tag_py_0, 0), (self.qtgui_freq_sink_x_0_0_0_0, 0))
+        self.connect((self.beamforming_correlate_and_tag_py_0, 0), (self.qtgui_time_sink_x_0_0_1_1_0_0, 0))
         self.connect((self.beamforming_filter_payload_py_0, 0), (self.blocks_stream_mux_1_0, 1))
         self.connect((self.beamforming_matlab_file_payload_py_0, 0), (self.blocks_stream_mux_1, 0))
+        self.connect((self.beamforming_matlab_file_payload_py_0_0, 0), (self.blocks_stream_mux_1_1, 0))
+        self.connect((self.blocks_add_xx_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.blocks_complex_to_mag_0, 0), (self.qtgui_time_sink_x_0_0_1_1_0_0_0, 0))
         self.connect((self.blocks_repeat_0, 0), (self.blocks_stream_mux_1, 1))
         self.connect((self.blocks_repeat_0_0, 0), (self.blocks_stream_mux_1, 2))
+        self.connect((self.blocks_repeat_0_0_0, 0), (self.blocks_stream_mux_1_1, 2))
         self.connect((self.blocks_repeat_0_1, 0), (self.blocks_stream_mux_1, 3))
-        self.connect((self.blocks_stream_mux_1, 0), (self.beamforming_correlate_and_tag_py_0, 0))
+        self.connect((self.blocks_repeat_0_1_0, 0), (self.blocks_stream_mux_1_1, 3))
+        self.connect((self.blocks_repeat_0_2, 0), (self.blocks_stream_mux_1_1, 1))
+        self.connect((self.blocks_stream_mux_1, 0), (self.blocks_add_xx_0, 0))
         self.connect((self.blocks_stream_mux_1_0, 0), (self.blocks_tag_gate_0, 0))
+        self.connect((self.blocks_stream_mux_1_1, 0), (self.blocks_add_xx_0, 1))
         self.connect((self.blocks_tag_gate_0, 0), (self.qtgui_time_sink_x_0_0_1_1_0_0_1, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.qtgui_freq_sink_x_0_0_0_0, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.qtgui_time_sink_x_0_0_1_1_0_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.beamforming_correlate_and_tag_py_0, 0))
         self.connect((self.zero_padding_0_0_0, 0), (self.blocks_repeat_0_0, 0))
         self.connect((self.zero_padding_0_0_0_0, 0), (self.blocks_repeat_0, 0))
         self.connect((self.zero_padding_0_0_0_0, 0), (self.blocks_repeat_0_1, 0))
         self.connect((self.zero_padding_0_0_0_0_0, 0), (self.blocks_stream_mux_1_0, 0))
+        self.connect((self.zero_padding_0_0_0_0_1, 0), (self.blocks_repeat_0_1_0, 0))
+        self.connect((self.zero_padding_0_0_0_0_1, 0), (self.blocks_repeat_0_2, 0))
+        self.connect((self.zero_padding_0_0_0_1, 0), (self.blocks_repeat_0_0_0, 0))
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "corr_test_rx")
+        self.settings = Qt.QSettings("GNU Radio", "offline_corr_test_rx")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
@@ -330,7 +347,7 @@ class corr_test_rx(gr.top_block, Qt.QWidget):
         self.data_files_path = data_files_path
 
 
-def main(top_block_cls=corr_test_rx, options=None):
+def main(top_block_cls=offline_corr_test_rx, options=None):
 
     from distutils.version import StrictVersion
     if StrictVersion(Qt.qVersion()) >= StrictVersion("4.5.0"):

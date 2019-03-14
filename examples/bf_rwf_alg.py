@@ -1,5 +1,6 @@
 #!/usr/bin/python
-
+## @note This file is NOT in use.
+# Test script to compare it with equivalent MATLAB function.
 import numpy
 
 
@@ -8,6 +9,10 @@ import numpy
 channel_est = [  0.4972 - 0.5409j,  -0.0038 - 0.4609j,  -0.0767 + 0.7706j,  -0.1477 + 0.6706j]
 channel_est = numpy.multiply (channel_est , 1.0e-03)
 
+
+channel_est = [0.9955639+0.j, 0.+0.j]
+
+print "Before WF beamweigts: {}".format(channel_est)
 
 def pow2db(a):
     return 10*numpy.log10(a)
@@ -52,7 +57,7 @@ SNRdb_offered = P_tx_offered + Atx + Gtx - P_ch + Noise;
 if SNRdb_offered < SINRdb:
     print('WARNING - Cannot achieve SNR. {}}vs {}} (dB)'.format(SNRdb_offered,SINRdb))
     print('WARNING - Consider revising Gains\n');
-    w_abs = sqrt(BBPowMax)  # assign maximum
+    w_abs = numpy.sqrt(BBPowMax)  # assign maximum
 
 else:
     # Water filling - power allocation
@@ -88,13 +93,14 @@ while (pow2db( BBPowPayload * numpy.matmul(
 
 # Assign weights (phase and power)
 beamWeight_angle = numpy.transpose( numpy.multiply(-1, numpy.angle(channel_est)) )         # Phase equalization
-beamWeight =   numpy.multiply(w_abs, numpy.add(
+beamWeights =   numpy.multiply(w_abs, numpy.add(
                             numpy.cos(beamWeight_angle),
                             numpy.multiply(0+1j, numpy.sin(beamWeight_angle))
                             ))
 
+print "WF algorith took: {} iterations".format(Niter)
+print "After WF beamweigts: {}".format(beamWeights)
 
-print beamWeight
 
 
 #    return BBPowPayload

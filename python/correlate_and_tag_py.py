@@ -341,6 +341,7 @@ class correlate_and_tag_py(gr.sync_block):
                     }
                 )
 
+            self.debug = True
             if self.debug: print("JSON: {}".format(str(dict_objects)))
             serialized = json.dumps(dict_objects, indent=4)
             self.sock.sendto(serialized, self.multicast_group)
@@ -360,8 +361,6 @@ class correlate_and_tag_py(gr.sync_block):
             self.push_data(x_cor_result[:push_size], "correlation_output")
             """
             self.correlation_window = self.correlation_window[push_size:]
-
-
 
 
         ## Forward the input as is
@@ -465,9 +464,11 @@ class correlate_and_tag_py(gr.sync_block):
         return channel_estimations
 
     def calculate_waterfilling_beamweights(self, channel_est):
+        ## @todo What happens when one or more channel estimations values are 0?
         self.debug = True
-
+        if self.debug: print "Before WF beamweigts: {}".format(channel_est)
         """ Static Parameters """
+        ## @todo should dynamically calculated based on PAYLOAD
         DeltaP = 0
         inc = 0.001
         SINRdb = 20
@@ -516,6 +517,8 @@ class correlate_and_tag_py(gr.sync_block):
             # print numpy.real(targetBB)
 
             #while pow2db(BBPowPayload*(w_abs*w_abs')) < targetBB
+
+
         while (self.__pow2db(BBPowPayload*numpy.matmul(w_abs, numpy.matrix(w_abs).getH()).item(0,0) )) < numpy.real(targetBB):
 
             # [~,idxvalids] = find(w_abs.^2 + inc < BBPowMax);
@@ -542,8 +545,8 @@ class correlate_and_tag_py(gr.sync_block):
                                                                 numpy.sin(beamWeight_angle))
                                         ))
 
-
-        if self.debug: print "WF beamweigts: {}".format(beamWeights)
+        if self.debug: print "WF algorith took: {} iterations".format(Niter)
+        if self.debug: print "After WF beamweigts: {}".format(beamWeights)
         self.debug = False
 
         return beamWeights

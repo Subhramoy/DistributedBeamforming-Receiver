@@ -46,7 +46,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>corr_test_rx</value>
+      <value>offline_corr_test_rx</value>
     </param>
     <param>
       <key>max_nouts</key>
@@ -101,7 +101,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(448, 36)</value>
+      <value>(448, 12)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -178,7 +178,8 @@
     </param>
     <param>
       <key>comment</key>
-      <value></value>
+      <value>Always returns Xcorr output of
+ the last Gold Sequence</value>
     </param>
     <param>
       <key>affinity</key>
@@ -194,11 +195,11 @@
     </param>
     <param>
       <key>feedback_type</key>
-      <value>1</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(728, 232)</value>
+      <value>(160, 664)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -234,61 +235,6 @@
     </param>
   </block>
   <block>
-    <key>beamforming_feedback_calculation_py</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>data_path</key>
-      <value>data_files_path + "/trainingSig"</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(912, 448)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>beamforming_feedback_calculation_py_0</value>
-    </param>
-    <param>
-      <key>frame_len</key>
-      <value>trainingSignal_size + 400 + 256* 64 + 100</value>
-    </param>
-    <param>
-      <key>seq_len</key>
-      <value>trainingSignal_size</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>number_of_Tx</key>
-      <value>1</value>
-    </param>
-  </block>
-  <block>
     <key>beamforming_filter_payload_py</key>
     <param>
       <key>alias</key>
@@ -308,7 +254,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(632, 452)</value>
+      <value>(520, 660)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -351,7 +297,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(8, 196)</value>
+      <value>(8, 108)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -375,6 +321,100 @@
     </param>
   </block>
   <block>
+    <key>beamforming_matlab_file_payload_py</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(8, 364)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>beamforming_matlab_file_payload_py_0_0</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>file_path</key>
+      <value>data_files_path + "/trainingSig2"</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_add_xx</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(1040, 200)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_add_xx_0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>complex</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>num_inputs</key>
+      <value>2</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
     <key>blocks_complex_to_mag</key>
     <param>
       <key>alias</key>
@@ -394,7 +434,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1032, 288)</value>
+      <value>(816, 720)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -418,37 +458,6 @@
     </param>
   </block>
   <block>
-    <key>blocks_message_debug</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(1168, 496)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>270</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>blocks_message_debug_0</value>
-    </param>
-  </block>
-  <block>
     <key>blocks_repeat</key>
     <param>
       <key>alias</key>
@@ -468,7 +477,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(248, 244)</value>
+      <value>(256, 140)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -519,7 +528,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(248, 284)</value>
+      <value>(232, 180)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -570,7 +579,58 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(248, 324)</value>
+      <value>(232, 436)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_repeat_0_0_0</value>
+    </param>
+    <param>
+      <key>interp</key>
+      <value>256*64</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>complex</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_repeat</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(248, 220)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -583,6 +643,108 @@
     <param>
       <key>interp</key>
       <value>100</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>complex</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_repeat</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(256, 476)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_repeat_0_1_0</value>
+    </param>
+    <param>
+      <key>interp</key>
+      <value>100</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>complex</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_repeat</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(256, 396)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_repeat_0_2</value>
+    </param>
+    <param>
+      <key>interp</key>
+      <value>400</value>
     </param>
     <param>
       <key>maxoutbuf</key>
@@ -621,7 +783,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(456, 216)</value>
+      <value>(480, 112)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -676,7 +838,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(824, 584)</value>
+      <value>(728, 632)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -712,6 +874,61 @@
     </param>
   </block>
   <block>
+    <key>blocks_stream_mux</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(480, 376)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_stream_mux_1_1</value>
+    </param>
+    <param>
+      <key>lengths</key>
+      <value>trainingSignal_size, 400 , 256* 64 , 100</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>num_inputs</key>
+      <value>4</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>complex</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
     <key>blocks_tag_gate</key>
     <param>
       <key>alias</key>
@@ -731,7 +948,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(960, 540)</value>
+      <value>(896, 636)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -786,11 +1003,11 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(960, 244)</value>
+      <value>(1148, 280)</value>
     </param>
     <param>
       <key>_rotation</key>
-      <value>0</value>
+      <value>270</value>
     </param>
     <param>
       <key>id</key>
@@ -869,7 +1086,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1056, 8)</value>
+      <value>(600, 752)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -877,7 +1094,7 @@
     </param>
     <param>
       <key>_rotation</key>
-      <value>90</value>
+      <value>0</value>
     </param>
     <param>
       <key>grid</key>
@@ -1061,7 +1278,7 @@
     </param>
     <param>
       <key>name</key>
-      <value>Tx Signal</value>
+      <value>Rx Signal</value>
     </param>
     <param>
       <key>nconnections</key>
@@ -1156,7 +1373,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1144, 40)</value>
+      <value>(600, 840)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -1164,7 +1381,7 @@
     </param>
     <param>
       <key>_rotation</key>
-      <value>90</value>
+      <value>0</value>
     </param>
     <param>
       <key>grid</key>
@@ -1420,7 +1637,7 @@
     </param>
     <param>
       <key>name</key>
-      <value>Tx Signal</value>
+      <value>Rx Signal</value>
     </param>
     <param>
       <key>nconnections</key>
@@ -1523,7 +1740,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1000, 336)</value>
+      <value>(1072, 704)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -1531,7 +1748,7 @@
     </param>
     <param>
       <key>_rotation</key>
-      <value>180</value>
+      <value>0</value>
     </param>
     <param>
       <key>grid</key>
@@ -1890,7 +2107,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1112, 656)</value>
+      <value>(1072, 624)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -2154,7 +2371,7 @@
     </param>
     <param>
       <key>name</key>
-      <value>Tx Signal</value>
+      <value>Retrieved Payload</value>
     </param>
     <param>
       <key>nconnections</key>
@@ -2222,6 +2439,60 @@
     </param>
   </block>
   <block>
+    <key>virtual_sink</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(1148, 456)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>270</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>virtual_sink_0</value>
+    </param>
+    <param>
+      <key>stream_id</key>
+      <value>flow</value>
+    </param>
+  </block>
+  <block>
+    <key>virtual_source</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(0, 700)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>virtual_source_0</value>
+    </param>
+    <param>
+      <key>stream_id</key>
+      <value>flow</value>
+    </param>
+  </block>
+  <block>
     <key>analog_const_source_x</key>
     <param>
       <key>alias</key>
@@ -2245,7 +2516,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(16, 420)</value>
+      <value>(8, 180)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2292,7 +2563,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(24, 284)</value>
+      <value>(8, 268)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2339,7 +2610,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(608, 548)</value>
+      <value>(544, 604)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2362,16 +2633,104 @@
       <value>complex</value>
     </param>
   </block>
+  <block>
+    <key>analog_const_source_x</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>const</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(8, 524)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>zero_padding_0_0_0_0_1</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>complex</value>
+    </param>
+  </block>
+  <block>
+    <key>analog_const_source_x</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>const</key>
+      <value>0.1-0.1j</value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(8, 436)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>zero_padding_0_0_0_1</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>complex</value>
+    </param>
+  </block>
   <connection>
     <source_block_id>beamforming_correlate_and_tag_py_0</source_block_id>
     <sink_block_id>blocks_complex_to_mag_0</sink_block_id>
     <source_key>1</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>beamforming_correlate_and_tag_py_0</source_block_id>
-    <sink_block_id>beamforming_feedback_calculation_py_0</sink_block_id>
-    <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
@@ -2382,15 +2741,15 @@
   </connection>
   <connection>
     <source_block_id>beamforming_correlate_and_tag_py_0</source_block_id>
-    <sink_block_id>blocks_throttle_0</sink_block_id>
+    <sink_block_id>qtgui_freq_sink_x_0_0_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
-    <source_block_id>beamforming_feedback_calculation_py_0</source_block_id>
-    <sink_block_id>blocks_message_debug_0</sink_block_id>
-    <source_key>out</source_key>
-    <sink_key>print_pdu</sink_key>
+    <source_block_id>beamforming_correlate_and_tag_py_0</source_block_id>
+    <sink_block_id>qtgui_time_sink_x_0_0_1_1_0_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
   </connection>
   <connection>
     <source_block_id>beamforming_filter_payload_py_0</source_block_id>
@@ -2401,6 +2760,18 @@
   <connection>
     <source_block_id>beamforming_matlab_file_payload_py_0</source_block_id>
     <sink_block_id>blocks_stream_mux_1</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>beamforming_matlab_file_payload_py_0_0</source_block_id>
+    <sink_block_id>blocks_stream_mux_1_1</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_add_xx_0</source_block_id>
+    <sink_block_id>blocks_throttle_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -2423,14 +2794,32 @@
     <sink_key>2</sink_key>
   </connection>
   <connection>
+    <source_block_id>blocks_repeat_0_0_0</source_block_id>
+    <sink_block_id>blocks_stream_mux_1_1</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>2</sink_key>
+  </connection>
+  <connection>
     <source_block_id>blocks_repeat_0_1</source_block_id>
     <sink_block_id>blocks_stream_mux_1</sink_block_id>
     <source_key>0</source_key>
     <sink_key>3</sink_key>
   </connection>
   <connection>
+    <source_block_id>blocks_repeat_0_1_0</source_block_id>
+    <sink_block_id>blocks_stream_mux_1_1</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>3</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_repeat_0_2</source_block_id>
+    <sink_block_id>blocks_stream_mux_1_1</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>1</sink_key>
+  </connection>
+  <connection>
     <source_block_id>blocks_stream_mux_1</source_block_id>
-    <sink_block_id>beamforming_correlate_and_tag_py_0</sink_block_id>
+    <sink_block_id>blocks_add_xx_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -2441,6 +2830,12 @@
     <sink_key>0</sink_key>
   </connection>
   <connection>
+    <source_block_id>blocks_stream_mux_1_1</source_block_id>
+    <sink_block_id>blocks_add_xx_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>1</sink_key>
+  </connection>
+  <connection>
     <source_block_id>blocks_tag_gate_0</source_block_id>
     <sink_block_id>qtgui_time_sink_x_0_0_1_1_0_0_1</sink_block_id>
     <source_key>0</source_key>
@@ -2448,13 +2843,13 @@
   </connection>
   <connection>
     <source_block_id>blocks_throttle_0</source_block_id>
-    <sink_block_id>qtgui_freq_sink_x_0_0_0_0</sink_block_id>
+    <sink_block_id>virtual_sink_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
   <connection>
-    <source_block_id>blocks_throttle_0</source_block_id>
-    <sink_block_id>qtgui_time_sink_x_0_0_1_1_0_0</sink_block_id>
+    <source_block_id>virtual_source_0</source_block_id>
+    <sink_block_id>beamforming_correlate_and_tag_py_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -2479,6 +2874,24 @@
   <connection>
     <source_block_id>zero_padding_0_0_0_0_0</source_block_id>
     <sink_block_id>blocks_stream_mux_1_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>zero_padding_0_0_0_0_1</source_block_id>
+    <sink_block_id>blocks_repeat_0_1_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>zero_padding_0_0_0_0_1</source_block_id>
+    <sink_block_id>blocks_repeat_0_2</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>zero_padding_0_0_0_1</source_block_id>
+    <sink_block_id>blocks_repeat_0_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
