@@ -40,7 +40,8 @@ GR_PYTHON_INSTALL(
     dynamic_padder_py.py
     feedback_calculation_py.py
     UDP_multicast_py.py
-    BER_calculation_py.py DESTINATION ${GR_PYTHON_DIR}/beamforming
+    BER_calculation_py.py
+    filter_payload_py.py DESTINATION ${GR_PYTHON_DIR}/beamforming
 )
 
 ########################################################################
@@ -60,3 +61,4 @@ GR_ADD_TEST(qa_dynamic_padder_py ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR
 GR_ADD_TEST(qa_feedback_calculation_py ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_feedback_calculation_py.py)
 GR_ADD_TEST(qa_UDP_multicast_py ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_UDP_multicast_py.py)
 GR_ADD_TEST(qa_BER_calculation_py ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_BER_calculation_py.py)
+GR_ADD_TEST(qa_filter_payload_py ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_filter_payload_py.py)

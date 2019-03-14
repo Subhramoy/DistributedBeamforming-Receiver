@@ -58,6 +58,8 @@ class correlate_and_tag_py(gr.sync_block):
 
         self.gold_seq_length = seq_len
         self.frame_length = frame_len
+        ## @todo this value should be dynamically assigned.
+        self.payload_size = 256*64
         self.num_active_Tx = num_Tx
 
         """Logger init"""
@@ -242,7 +244,7 @@ class correlate_and_tag_py(gr.sync_block):
                     )           )
                     """
 
-                    self.debug = True
+                    self.debug = False
 
                     ## Channel state
                     # @todo assign value to channel_state[tx_index]
@@ -251,12 +253,12 @@ class correlate_and_tag_py(gr.sync_block):
                         self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq],
                         self.gold_sequences[tx_index], out=numpy.zeros_like(self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq]), where=self.gold_sequences[tx_index]!=0
                     )           )
-                    print("Tx: {} CSI: {}".format(tx_index+1, channel_state[tx_index] ))
+                    if self.debug: print("Tx: {} CSI: {}".format(tx_index+1, channel_state[tx_index] ))
 
                 else:
-                    self.debug = True
+                    self.debug = False
                     found_flags[tx_index] = 0
-                    print("Could not correlate training signal {}".format(tx_index+1))
+                    if self.debug: print("Could not correlate training signal {}".format(tx_index+1))
 
                 # Create the TAGS
                 key_flow = pmt.intern("training_Sig_{}".format(tx_index+1))
@@ -280,6 +282,19 @@ class correlate_and_tag_py(gr.sync_block):
                                   , key_xcor, value_xcor)
 
 
+                ## @note always mark payload based on the 1st Tx
+                if tx_index == 0 :
+                    key_payload = pmt.intern("payload")
+                    value_payload = pmt.intern(str(self.payload_size))
+                    self.add_item_tag(0,
+                                      output_head
+                                      + len(self.output) # Items waiting in output queue
+                                      + peak_indices[0]
+                                      + self.gold_seq_length/2
+                                      + 400 # zero padding comes after Gold Seq.
+                                      , key_payload, value_payload)
+
+
             max_index = int(numpy.max(corr_indices))
 
             # Calculate the individual delay values
@@ -290,7 +305,7 @@ class correlate_and_tag_py(gr.sync_block):
                         delays[tx_index] = possible_delay
                     else:
                         delays[tx_index] = 0
-                print("Tx: {} Delay: {}".format(tx_index+1,  delays[tx_index]))
+                if self.debug: print("Tx: {} Delay: {}".format(tx_index+1,  delays[tx_index]))
                 #delays[tx_index] = 0
 
             channel_estimations = []
@@ -305,7 +320,7 @@ class correlate_and_tag_py(gr.sync_block):
                     }
                 )
 
-            print("JSON: {}".format(str(channel_estimations)))
+            if self.debug: print("JSON: {}".format(str(channel_estimations)))
             serialized = json.dumps(channel_estimations, indent=4)
             self.sock.sendto(serialized, self.multicast_group)
 
@@ -396,7 +411,7 @@ class correlate_and_tag_py(gr.sync_block):
     #
     def get_peaks(self, correlation_output):
 
-        self.debug = True
+        self.debug = False
         expected_distance = 100 # If the dist is greater than this, interpret as another cluster
 
         filtered_candidates = []
