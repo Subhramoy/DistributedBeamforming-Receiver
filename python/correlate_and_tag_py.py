@@ -46,7 +46,7 @@ class correlate_and_tag_py(gr.sync_block):
     """
     docstring for block correlate_and_tag_py
     """
-    def __init__(self, seq_len, frame_len, num_Tx, file_path, cor_method):
+    def __init__(self, seq_len, frame_len, num_Tx, file_path, cor_method, feedback_type):
         gr.sync_block.__init__(self,
             name="correlate_and_tag_py",
             in_sig=[numpy.complex64],
@@ -113,13 +113,28 @@ class correlate_and_tag_py(gr.sync_block):
 
         self.correlation_window = []
 
+        """Init fft method"""
         # Use fft based correlation
-        if cor_method == "fft":
+        if cor_method == 1:
             self.log.info("FFT-based correlation init.")
             self.correlate = self.signal_fft_correllation
-        else: # Default correlation function
+        elif cor_method == 0 : # Default correlation function
             self.log.info("Default correlation init.")
             self.correlate = self.numpy_correlation
+        else:
+            self.log.error("Undefined correlation type.")
+            self.correlate = None
+
+        """ Init feedback type"""
+        if feedback_type == 0: # Send only channel information
+            self.log.info("Default feedback type init.")
+            self.generate_feedback = self.default_csi_feedback
+        elif  feedback_type == 1:
+            self.log.info("Water filling algorithm feedback init.")
+            self.generate_feedback = self.calculate_waterfilling_beamweights
+        else:
+            self.log.error("Undefined feedback type.")
+            self.generate_feedback = None
 
 
 
@@ -186,7 +201,7 @@ class correlate_and_tag_py(gr.sync_block):
 
 
             ## Variables which construct feedback
-            channel_state = numpy.ones(self.num_active_Tx, dtype=numpy.complex64)
+            channel_estimations = numpy.ones(self.num_active_Tx, dtype=numpy.complex64)
             delays = numpy.zeros(self.num_active_Tx, dtype=numpy.int)
             corr_indices = numpy.zeros(self.num_active_Tx, dtype=numpy.int)
             found_flags = numpy.zeros(self.num_active_Tx, dtype=numpy.int)
@@ -234,7 +249,8 @@ class correlate_and_tag_py(gr.sync_block):
                     corr_indices[tx_index] = s_index_of_gold_seq
                     found_flags[tx_index] = 1
                     print ("Training Signal starts :{} ends {}".format(s_index_of_gold_seq, e_index_of_gold_seq ))
-                    """print    numpy.divide(
+                    """
+                    print  numpy.divide(
                             self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq],
                             self.gold_sequences[tx_index], out=numpy.zeros_like(self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq]), where=self.gold_sequences[tx_index]!=0
                         )
@@ -246,14 +262,14 @@ class correlate_and_tag_py(gr.sync_block):
 
                     self.debug = False
 
-                    ## Channel state
-                    # @todo assign value to channel_state[tx_index]
+                    ## Channel states
+                    # @todo assign value to channel_estimations[tx_index]
                     # @todo if it is zero make it one
-                    channel_state[tx_index] = numpy.nanmean(   numpy.divide(
+                    channel_estimations[tx_index] = numpy.nanmean(   numpy.divide(
                         self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq],
                         self.gold_sequences[tx_index], out=numpy.zeros_like(self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq]), where=self.gold_sequences[tx_index]!=0
                     )           )
-                    if self.debug: print("Tx: {} CSI: {}".format(tx_index+1, channel_state[tx_index] ))
+                    if self.debug: print("Tx: {} CSI: {}".format(tx_index+1, channel_estimations[tx_index] ))
 
                 else:
                     self.debug = False
@@ -308,20 +324,25 @@ class correlate_and_tag_py(gr.sync_block):
                 if self.debug: print("Tx: {} Delay: {}".format(tx_index+1,  delays[tx_index]))
                 #delays[tx_index] = 0
 
-            channel_estimations = []
-            # Fill out feedback dictionary
+            ## Calculate beamweight based on feedback methods
+            # Default: Simply return estimations
+            # Waterfilling: Return weight calculated by WF alg.
+            feedback_weights = self.generate_feedback(channel_estimations)
+
+            dict_objects = []
+            ## Fill out dictionary used in feedback
             for tx_index in range(self.num_active_Tx):
-                channel_estimations.append(
+                dict_objects.append(
                     {
                         "Tx_ID": tx_index+1,
-                        "real": float(numpy.real(channel_state[tx_index])),
-                        "imaginary": float(numpy.imag(channel_state[tx_index])),
+                        "real": float(numpy.real(feedback_weights[tx_index])),
+                        "imaginary": float(numpy.imag(feedback_weights[tx_index])),
                         "delay": delays[tx_index]
                     }
                 )
 
-            if self.debug: print("JSON: {}".format(str(channel_estimations)))
-            serialized = json.dumps(channel_estimations, indent=4)
+            if self.debug: print("JSON: {}".format(str(dict_objects)))
+            serialized = json.dumps(dict_objects, indent=4)
             self.sock.sendto(serialized, self.multicast_group)
 
             self.debug = False
@@ -362,48 +383,6 @@ class correlate_and_tag_py(gr.sync_block):
                             format(len(out), len(corr_out), len(in0)))
         return len(in0)
 
-    def push_data(self, data_array, output_queue_name):
-        print "NOOOooooooooooooooo"
-        # np.concatenate((a, b), axis=None)
-        if output_queue_name == "output":
-            for e in data_array:
-                self.output.put(e)
-        elif output_queue_name == "correlation_output":
-            for e in data_array:
-                self.corr_output.put(e)
-        else:
-            raise Exception("Undefined output queue.")
-
-    def pull_data(self, length, output_queue_name):
-        print "NOOOooooooooooooooo"
-
-        data_array = []
-        index = 0
-
-        if output_queue_name == "output":
-
-            if self.output.qsize() < length:
-                length = self.output.qsize()
-
-            while index < length:
-                data_array.append(self.output.get())
-                index = index + 1
-
-        elif output_queue_name == "correlation_output":
-
-            if self.corr_output.qsize() < length:
-                length = self.corr_output.qsize()
-
-            while index < length:
-                data_array.append(self.corr_output.get())
-                index = index + 1
-        else:
-            raise Exception("Undefined output queue.")
-
-        return data_array
-        ##numpy.ndarray(shape=(length,),
-        #                     buffer=data_array,
-        #                     dtype=numpy.complex64)[:length]
 
 
     ## MATLAB CODE
@@ -445,6 +424,7 @@ class correlate_and_tag_py(gr.sync_block):
         return filtered_candidates
 
 
+    ## Reads Gold Sequences from a file
     def get_training_signal(self, file_path, number_Tx):
 
         gold_sequence = []
@@ -480,13 +460,147 @@ class correlate_and_tag_py(gr.sync_block):
 
         return gold_sequence
 
-    # Correlation adapter functions
+    ## Feedback adapters
+    def default_csi_feedback(self, channel_estimations):
+        return channel_estimations
+
+    def calculate_waterfilling_beamweights(self, channel_est):
+        self.debug = True
+
+        """ Static Parameters """
+        DeltaP = 0
+        inc = 0.001
+        SINRdb = 20
+        Atx = 0
+        Gtx = 0
+        Noise = 105
+        BBPowMax = 6327e+03
+        BBPowPayload = 9.1553e-05
+
+
+        """ Water-filling Algorithm """
+        chEst_abs = numpy.absolute(channel_est)  # Channel gain
+        w_abs = numpy.zeros(len(channel_est), dtype=float)  # Initialization of weight power
+        Niter = 1  # initialize number of total iterations
+
+        ## Check if requested SNR is attainable
+        # P_ch = -pow2db(chEst*chEst');
+        P_ch = -1*self.__pow2db( # pow2db
+            numpy.matmul( # Matrix multiply
+                channel_est, # CE array
+                numpy.matrix(channel_est).getH() # Complex conjugate
+            )
+        )
+
+        P_ch = P_ch.item(0,0)
+
+
+        #BBPowMax_rep = repmat(BBPowPayload*BBPowMax,1,length(channel_estimations));
+        BBPowMax_rep = numpy.repeat(BBPowPayload*BBPowMax,len(channel_est))
+
+        #P_tx_offered = pow2db(sum(BBPowMax_rep)) + 30;
+        P_tx_offered = self.__pow2db(numpy.sum(BBPowMax_rep)) + 30
+
+        #SNRdb_offered = P_tx_offered + Atx + Gtx - P_ch + Noise;
+        SNRdb_offered = P_tx_offered + Atx + Gtx - P_ch + Noise
+
+        if SNRdb_offered < SINRdb:
+            if self.debug: print('WARNING - Cannot achieve SNR. {}}vs {}} (dB)'.format(SNRdb_offered,SINRdb))
+            if self.debug: print('WARNING - Consider revising Gains\n')
+            w_abs = numpy.sqrt(BBPowMax)  # assign maximum
+
+        else:
+            # Water filling - power allocation
+            targetBB = SINRdb + P_ch - Atx - Gtx - Noise - 30  # in dB (not in dBm, important)
+            #print targetBB
+            # print numpy.real(targetBB)
+
+            #while pow2db(BBPowPayload*(w_abs*w_abs')) < targetBB
+        while (self.__pow2db(BBPowPayload*numpy.matmul(w_abs, numpy.matrix(w_abs).getH()).item(0,0) )) < numpy.real(targetBB):
+
+            # [~,idxvalids] = find(w_abs.^2 + inc < BBPowMax);
+            idxvalids = numpy.nonzero(numpy.power(w_abs, 2) + inc < BBPowMax)[0]
+            if idxvalids.size == 0:
+                break
+
+            # Locate the lowest noise level channel
+            index = numpy.argsort(numpy.power(w_abs[idxvalids], 2) + numpy.power(numpy.divide(1, chEst_abs[idxvalids]),2 ))
+
+            # Otherwise go to the next smallest power channel
+            w_abs[idxvalids[index[0]]] = w_abs[idxvalids[index[0]]] + inc
+            #print('iter {}- Achieved Power = {} (dBm)\n'.format(Niter,pow2db(w_abs*ww_abs')))
+            Niter = Niter + 1
+
+
+        # Assign weights (phase and power)
+        beamWeight_angle = numpy.transpose( numpy.multiply(-1, numpy.angle(channel_est)) )         # Phase equalization
+        beamWeights =   numpy.multiply(w_abs,
+                                      numpy.add(
+                                                numpy.cos(beamWeight_angle),
+                                                numpy.multiply(
+                                                                0+1j,
+                                                                numpy.sin(beamWeight_angle))
+                                        ))
+
+
+        if self.debug: print "WF beamweigts: {}".format(beamWeights)
+        self.debug = False
+
+        return beamWeights
+
+    def __pow2db(self,a):
+        return 10*numpy.log10(a)
+
+    ## Correlation adapter functions
     def numpy_correlation(self, in1, in2):
         return  numpy.correlate(in1, in2, mode='same')
 
     def signal_fft_correllation(self,in1, in2):
         return signal.correlate(in1, in2, mode='same',method='fft')
+"""
+ def push_data(self, data_array, output_queue_name):
+        print "NOOOooooooooooooooo"
+        # np.concatenate((a, b), axis=None)
+        if output_queue_name == "output":
+            for e in data_array:
+                self.output.put(e)
+        elif output_queue_name == "correlation_output":
+            for e in data_array:
+                self.corr_output.put(e)
+        else:
+            raise Exception("Undefined output queue.")
 
+    def pull_data(self, length, output_queue_name):
+        print "NOOOooooooooooooooo"
+
+        data_array = []
+        index = 0
+
+        if output_queue_name == "output":
+
+            if self.output.qsize() < length:
+                length = self.output.qsize()
+
+            while index < length:
+                data_array.append(self.output.get())
+                index = index + 1
+
+        elif output_queue_name == "correlation_output":
+
+            if self.corr_output.qsize() < length:
+                length = self.corr_output.qsize()
+
+            while index < length:
+                data_array.append(self.corr_output.get())
+                index = index + 1
+        else:
+            raise Exception("Undefined output queue.")
+
+        return data_array
+        ##numpy.ndarray(shape=(length,),
+        #                     buffer=data_array,
+        #                     dtype=numpy.complex64)[:length]
+"""
 
 
 """
