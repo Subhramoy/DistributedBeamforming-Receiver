@@ -186,11 +186,15 @@
     </param>
     <param>
       <key>cor_method</key>
-      <value>""</value>
+      <value>0</value>
     </param>
     <param>
       <key>_enabled</key>
       <value>True</value>
+    </param>
+    <param>
+      <key>feedback_type</key>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
