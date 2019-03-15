@@ -301,8 +301,12 @@
       <value>True</value>
     </param>
     <param>
+      <key>feedback_type</key>
+      <value>0</value>
+    </param>
+    <param>
       <key>_coordinate</key>
-      <value>(1237, 1024)</value>
+      <value>(1216, 1008)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -330,7 +334,7 @@
     </param>
     <param>
       <key>source_type</key>
-      <value></value>
+      <value>1</value>
     </param>
     <param>
       <key>Tx_ID</key>
@@ -609,7 +613,7 @@
     </param>
     <param>
       <key>comment</key>
-      <value>Multiply with (-1/NFFT)</value>
+      <value>Multiply with (1/NFFT)</value>
     </param>
     <param>
       <key>const</key>
@@ -2466,6 +2470,37 @@ def get_points(modulation_name):
     <param>
       <key>window</key>
       <value>()</value>
+    </param>
+  </block>
+  <block>
+    <key>note</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value>Allocates the whole band</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(792, 636)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>note_0</value>
+    </param>
+    <param>
+      <key>note</key>
+      <value>Spectrum Alloc.</value>
     </param>
   </block>
   <block>

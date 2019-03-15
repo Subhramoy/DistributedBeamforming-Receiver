@@ -45,7 +45,7 @@ class CSI_feedback_adapter_py(gr.basic_block):
 
     file_path = ""
     numTxAntennas = 1
-    beamweight = complex(1.0, 1.0)
+    beamweight = complex(1.0, 0.0)
     delay = 0
 
 
@@ -63,7 +63,8 @@ class CSI_feedback_adapter_py(gr.basic_block):
                  number_of_tx_antennas,
                  multicast_IP,
                  multicast_port,
-                 Tx_ID):
+                 Tx_ID,
+                 feedback_type):
 
         gr.basic_block.__init__(self,
             name="CSI_feedback_adapter_py",
@@ -105,6 +106,20 @@ class CSI_feedback_adapter_py(gr.basic_block):
             print "Undefined source type while initializing CSI-fb-adapter."
             raise ValueError("Undefined source type while initializing CSI-fb-adapter.")
 
+
+        """ Init feedback type"""
+        if feedback_type == 0: # Send only channel information
+            self.log.info("Default feedback type init.")
+            self.feedback_to_beamweight = self.default_csi_calculation
+        elif  feedback_type == 1:
+            self.log.info("Water filling algorithm feedback init.")
+            self.feedback_to_beamweight = self.waterfilling_beamweight
+        else:
+            self.log.error("Undefined feedback type.")
+            self.feedback_to_beamweight = None
+
+
+
     def send_beamweight(self, msg):
         weight = pmt.from_complex(self.beamweight)
         self.message_port_pub(pmt.intern("beamweight"), weight)
@@ -113,9 +128,9 @@ class CSI_feedback_adapter_py(gr.basic_block):
 
     def send_delay(self, msg):
         #delay = pmt.from_string(self.beamweight)
-	#delay = pmt.from_double(self.beamweight)
-	delay = pmt.string_to_symbol(str(self.delay))
-	#print type(delay)
+        #delay = pmt.from_double(self.beamweight)
+        delay = pmt.string_to_symbol(str(self.delay))
+        #print type(delay)
         self.message_port_pub(pmt.intern("delay"), delay)
         print "Delay sent: {}".format(delay)
 
@@ -179,15 +194,8 @@ class CSI_feedback_adapter_py(gr.basic_block):
         except Exception as e:
             print e
 
-        # Reconstructing channel estimation value in complex format
-        # self.channel_est = [real, imaginary]
-        channel_est_complex = complex(real, imaginary)
-        #print channel_est_complex
-        abs_channel_est_antennas = abs(channel_est_complex)
-        phase_correction = channel_est_complex / abs_channel_est_antennas
-
-        beamweight = 1/phase_correction
-        self.beamweight = beamweight
+        feedback = complex(real, imaginary)
+        self.beamweight = self.feedback_to_beamweight(feedback)
 
         self.send_beamweight(None)
 
@@ -195,7 +203,25 @@ class CSI_feedback_adapter_py(gr.basic_block):
             self.send_delay(None)
 
 
+    def default_csi_calculation(self, feedback):
+        # Reconstructing channel estimation value in complex format
+        # self.channel_est = [real, imaginary]
+        channel_est_complex = feedback
+        #print channel_est_complex
+        abs_channel_est_antennas = abs(channel_est_complex)
+        phase_correction = channel_est_complex / abs_channel_est_antennas
+
+        beamweight = 1/phase_correction
+        return beamweight
+
+    def waterfilling_beamweight(self, feedback):
+        return feedback
+
+
     def read_bw_from_file(self):
+        ## @note Does not have capabilities implemented as UDP source (delay, fb type)
+        # @todo Extraction of delay from JSON
+        # @todo Waterfilling fb test
 
         # Extracting the real and imaginary values of channel estimation
         # First 8 bytes of binary file 'weights_tx2.bin' contain real values
@@ -242,17 +268,9 @@ class CSI_feedback_adapter_py(gr.basic_block):
                 print "Index error on parsed binary file."
 
         else:
-            # Reconstructing channel estimation value in complex format
-            channel_est_complex = complex(real, imaginary)
-
-            # print channel_est_complex
-
-            abs_channel_est_antennas = abs(channel_est_complex)
-            phase_correction = channel_est_complex / abs_channel_est_antennas
-
-            beamweight = 1/phase_correction
-
-            return beamweight
+            feedback = complex(real, imaginary)
+            # print feedback
+            return self.feedback_to_beamweight(feedback)
 
 
 

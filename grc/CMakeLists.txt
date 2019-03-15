@@ -28,5 +28,6 @@ install(FILES
     beamforming_feedback_calculation_py.xml
     beamforming_UDP_multicast_py.xml
     beamforming_BER_calculation_py.xml
-    beamforming_filter_payload_py.xml DESTINATION share/gnuradio/grc/blocks
+    beamforming_filter_payload_py.xml
+    DESTINATION share/gnuradio/grc/blocks
 )

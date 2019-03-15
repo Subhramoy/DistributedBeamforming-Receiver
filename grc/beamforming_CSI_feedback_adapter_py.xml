@@ -10,7 +10,8 @@
       $number_of_tx_antennas,
       $multicast_IP,
       $multicast_port,
-      $Tx_ID)
+      $Tx_ID,
+      $feedback_type)
   </make>
     <param>
         <name>Transmitter ID</name>
@@ -54,6 +55,19 @@
     <key>file_path</key>
     <type>string</type>
   </param>
+    <param>
+        <name>Feedback Type</name>
+        <key>feedback_type</key>
+        <type>int</type>
+        <option>
+            <name>CSI</name>
+            <key>0</key>
+        </option>
+        <option>
+            <name>Waterfilling Beamweight</name>
+            <key>1</key>
+        </option>
+    </param>
   <sink>
     <name>trigger</name>
     <type>message</type>
