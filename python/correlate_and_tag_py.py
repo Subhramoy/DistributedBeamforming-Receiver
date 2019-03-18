@@ -245,7 +245,7 @@ class correlate_and_tag_py(gr.sync_block):
                 e_index_of_gold_seq = s_index_of_gold_seq +  self.gold_seq_length
 
 #                if s_index_of_gold_seq >= 0 and e_index_of_gold_seq <= len(self.correlation_window):
-                if s_index_of_gold_seq >= 0 and e_index_of_gold_seq <= len(self.correlation_window):
+                if  e_index_of_gold_seq <= len(self.correlation_window):
                     corr_indices[tx_index] = s_index_of_gold_seq
                     found_flags[tx_index] = 1
                     print ("Training Signal starts :{} ends {}".format(s_index_of_gold_seq, e_index_of_gold_seq ))
@@ -264,11 +264,29 @@ class correlate_and_tag_py(gr.sync_block):
 
                     ## Channel states
                     # @todo assign value to channel_estimations[tx_index]
-                    # @todo if it is zero make it one
+                    # @todo if it is zero make it one\
+                    if s_index_of_gold_seq < 0: 
+		    	s_index_of_gold_seq = 0
+		    	#print "start index of gold seq", s_index_of_gold_seq
+		    	#print "end index of gold seq", e_index_of_gold_seq
+			rec_gs = numpy.array(self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq])
+		    	stored_gs = numpy.array((self.gold_sequences[tx_index])[s_index_of_gold_seq:e_index_of_gold_seq]) 
+		    	#print "rec_gs", len(rec_gs)
+		    	#print "stored_gs", len(stored_gs)
+		    else:
+		    	#print "start index of gold seq", s_index_of_gold_seq
+		    	#print "end index of gold seq", e_index_of_gold_seq
+                    	rec_gs = numpy.array(self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq])
+		    	stored_gs = numpy.array(self.gold_sequences[tx_index])
+		    	#print "rec_gs", len(rec_gs)
+		    	#print "stored_gs", len(stored_gs)
+                    """
                     channel_estimations[tx_index] = numpy.nanmean(   numpy.divide(
                         self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq],
-                        self.gold_sequences[tx_index], out=numpy.zeros_like(self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq]), where=self.gold_sequences[tx_index]!=0
+                        self.gold_sequences[tx_index][s_index_of_gold_seq:e_index_of_gold_seq], out=numpy.zeros_like(self.correlation_window[s_index_of_gold_seq:e_index_of_gold_seq]), where=self.gold_sequences[tx_index][s_index_of_gold_seq:e_index_of_gold_seq]!=0
                     )           )
+                    """
+                    channel_estimations[tx_index] = numpy.nanmean(numpy.divide(rec_gs, stored_gs, out=numpy.zeros_like(rec_gs), where=stored_gs!=0))
                     if self.debug: print("Tx: {} CSI: {}".format(tx_index+1, channel_estimations[tx_index] ))
 
                 else:
