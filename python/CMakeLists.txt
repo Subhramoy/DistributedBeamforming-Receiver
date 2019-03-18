@@ -41,7 +41,8 @@ GR_PYTHON_INSTALL(
     feedback_calculation_py.py
     UDP_multicast_py.py
     BER_calculation_py.py
-    filter_payload_py.py DESTINATION ${GR_PYTHON_DIR}/beamforming
+    filter_payload_py.py
+    DESTINATION ${GR_PYTHON_DIR}/beamforming
 )
 
 ########################################################################
