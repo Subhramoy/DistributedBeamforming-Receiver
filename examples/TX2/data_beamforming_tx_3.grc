@@ -355,6 +355,10 @@
       <value>True</value>
     </param>
     <param>
+      <key>feedback_type</key>
+      <value>0</value>
+    </param>
+    <param>
       <key>_coordinate</key>
       <value>(1120, 796)</value>
     </param>
@@ -415,6 +419,10 @@
     </param>
     <param>
       <key>_enabled</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>feedback_type</key>
       <value>0</value>
     </param>
     <param>
@@ -5748,7 +5756,7 @@ def get_points(modulation_name):
     </param>
     <param>
       <key>stream_id</key>
-      <value>payload2</value>
+      <value>payload1</value>
     </param>
   </block>
   <block>

@@ -6,7 +6,7 @@ addpath('utils','-end');
 load(fullfile('data','information5.mat'),'bits','symbols','payload1');
 
 %% CONFIGURATION
-maxIter       = 100000;
+maxIter       = 1000;
 fileName      = 'payload.dat';
 readSize      = 64*256;  % Payload length is 64*256
 modList       = [64 32 16 8 4 2];  % Modulation list
@@ -30,13 +30,13 @@ for i = 1:maxIter
         fftOut = fft(reshape(myRead, 256, 64));
     
         %% OFDM Subcarrier indexing
-%         figure(20); clf('reset');
+         figure(20); clf('reset');
         for modIdx = 1:length(modList)
             index = 4 + modIdx;
             y = fftOut(index,:).';  % Extract Subcarrier
             y = y/sqrt(mean(y'*y));  % Normalize symbols
             y = 1/sqrt(sum(var(y))).*y;  % Normalize symbols
-    %             plotMyConstellation(modIdx,modList,bits,y);
+                 plotMyConstellation(modIdx,modList,bits,y);
             % Compute Bit Error Rate for the 64-QAM modulation
             if ~isempty(y) && ~any(isnan(y))
                 % Demodulator expecting normalized symbols
@@ -61,3 +61,14 @@ for i = 1:maxIter
 end
 
 fclose(fid);
+
+function plotMyConstellation(modIdx,modList,bits,y)
+    % Plot constellation
+    figure(20);  subplot(1,length(modList),modIdx);  hold on;
+    y_tx = qammod(bits{modIdx},modList(modIdx),'InputType','bit','UnitAveragePower',true);
+    plot(real(y_tx),imag(y_tx),'LineStyle','None','Marker','.','Color','r');
+    plot(real(y),imag(y),'LineStyle','None','Marker','.','Color','b');
+    xlim([-2 2]);  ylim([-2 2]);  % Normalized
+    tit = strcat('Receiver with k =',{' '},num2str(modList(modIdx)));
+    title(tit{1},'FontSize',12);
+end

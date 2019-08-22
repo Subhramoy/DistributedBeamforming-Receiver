@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Airbeam Test
-# Generated: Sat Mar 16 19:41:58 2019
+# Generated: Mon Aug 19 17:31:11 2019
 ##################################################
 
 if __name__ == '__main__':
@@ -29,6 +29,7 @@ import beamforming
 import sip
 import sys
 import time
+from gnuradio import qtgui
 
 
 class airbeam_test(gr.top_block, Qt.QWidget):
@@ -37,6 +38,7 @@ class airbeam_test(gr.top_block, Qt.QWidget):
         gr.top_block.__init__(self, "Airbeam Test")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Airbeam Test")
+        qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
         except:
@@ -56,29 +58,30 @@ class airbeam_test(gr.top_block, Qt.QWidget):
         self.settings = Qt.QSettings("GNU Radio", "airbeam_test")
         self.restoreGeometry(self.settings.value("geometry").toByteArray())
 
+
         ##################################################
         # Variables
         ##################################################
         self.trainingSignal_size = trainingSignal_size = 16456
         self.samp_rate = samp_rate = 400e3
-        self.data_files_path = data_files_path = "/home/genesys-lab/workarea-gnuradio/gnuradio/gr-beamforming/examples/data"
+        self.data_files_path = data_files_path = "/home/genesys/workarea-gnuradio/gnuradio/gr-beamforming/examples/data"
 
         ##################################################
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-        	",".join(("serial=316E293", "")),
+        	",".join(("serial=316E275", "")),
         	uhd.stream_args(
         		cpu_format="fc32",
         		channels=range(1),
         	),
         )
-        self.uhd_usrp_source_0.set_clock_source('gpsdo', 0)
-        self.uhd_usrp_source_0.set_time_source('gpsdo', 0)
+        self.uhd_usrp_source_0.set_clock_source('external', 0)
+        self.uhd_usrp_source_0.set_time_source('external', 0)
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
         self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
-        self.uhd_usrp_source_0.set_center_freq(900e6, 0)
-        self.uhd_usrp_source_0.set_gain(40, 0)
+        self.uhd_usrp_source_0.set_center_freq(uhd.tune_request(1900e6,1e6), 0)
+        self.uhd_usrp_source_0.set_gain(70, 0)
         self.uhd_usrp_source_0.set_antenna('RX2', 0)
         self.uhd_usrp_source_0.set_bandwidth(400e3, 0)
         self.qtgui_time_sink_x_0_0_1_1_0_0_0 = qtgui.time_sink_f(
@@ -89,19 +92,20 @@ class airbeam_test(gr.top_block, Qt.QWidget):
         )
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_update_time(0.10)
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_y_axis(-1, 1)
-        
+
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_y_label('Amplitude', "")
-        
+
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.enable_tags(-1, True)
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.enable_autoscale(True)
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.enable_grid(False)
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.enable_axis_labels(True)
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.enable_control_panel(False)
-        
+        self.qtgui_time_sink_x_0_0_1_1_0_0_0.enable_stem_plot(False)
+
         if not True:
           self.qtgui_time_sink_x_0_0_1_1_0_0_0.disable_legend()
-        
+
         labels = ['IQ', 'Corr Output', '', '', '',
                   '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
@@ -114,7 +118,7 @@ class airbeam_test(gr.top_block, Qt.QWidget):
                    -1, -1, -1, -1, -1]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
                   1.0, 1.0, 1.0, 1.0, 1.0]
-        
+
         for i in xrange(1):
             if len(labels[i]) == 0:
                 self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_line_label(i, "Data {0}".format(i))
@@ -125,9 +129,9 @@ class airbeam_test(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_line_style(i, styles[i])
             self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_line_marker(i, markers[i])
             self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_line_alpha(i, alphas[i])
-        
+
         self._qtgui_time_sink_x_0_0_1_1_0_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0_1_1_0_0_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_0_1_1_0_0_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_1_1_0_0_0_win)
         self.qtgui_time_sink_x_0_0_1_1_0_0 = qtgui.time_sink_c(
         	200000, #size
         	samp_rate, #samp_rate
@@ -136,19 +140,20 @@ class airbeam_test(gr.top_block, Qt.QWidget):
         )
         self.qtgui_time_sink_x_0_0_1_1_0_0.set_update_time(0.10)
         self.qtgui_time_sink_x_0_0_1_1_0_0.set_y_axis(-1, 1)
-        
+
         self.qtgui_time_sink_x_0_0_1_1_0_0.set_y_label('Amplitude', "")
-        
+
         self.qtgui_time_sink_x_0_0_1_1_0_0.enable_tags(-1, True)
         self.qtgui_time_sink_x_0_0_1_1_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
         self.qtgui_time_sink_x_0_0_1_1_0_0.enable_autoscale(True)
         self.qtgui_time_sink_x_0_0_1_1_0_0.enable_grid(False)
         self.qtgui_time_sink_x_0_0_1_1_0_0.enable_axis_labels(True)
         self.qtgui_time_sink_x_0_0_1_1_0_0.enable_control_panel(False)
-        
+        self.qtgui_time_sink_x_0_0_1_1_0_0.enable_stem_plot(False)
+
         if not True:
           self.qtgui_time_sink_x_0_0_1_1_0_0.disable_legend()
-        
+
         labels = ['IQ', 'Corr Output', '', '', '',
                   '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
@@ -161,8 +166,8 @@ class airbeam_test(gr.top_block, Qt.QWidget):
                    -1, -1, -1, -1, -1]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
                   1.0, 1.0, 1.0, 1.0, 1.0]
-        
-        for i in xrange(2*1):
+
+        for i in xrange(2):
             if len(labels[i]) == 0:
                 if(i % 2 == 0):
                     self.qtgui_time_sink_x_0_0_1_1_0_0.set_line_label(i, "Re{{Data {0}}}".format(i/2))
@@ -175,13 +180,13 @@ class airbeam_test(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0_0_1_1_0_0.set_line_style(i, styles[i])
             self.qtgui_time_sink_x_0_0_1_1_0_0.set_line_marker(i, markers[i])
             self.qtgui_time_sink_x_0_0_1_1_0_0.set_line_alpha(i, alphas[i])
-        
+
         self._qtgui_time_sink_x_0_0_1_1_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0_1_1_0_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_0_1_1_0_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_1_1_0_0_win)
         self.qtgui_freq_sink_x_0_0_0_0 = qtgui.freq_sink_c(
         	256*8, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
-        	900e6, #fc
+        	1900e6, #fc
         	samp_rate, #bw
         	'Tx Signal', #name
         	1 #number of inputs
@@ -195,13 +200,13 @@ class airbeam_test(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0_0_0_0.set_fft_average(1.0)
         self.qtgui_freq_sink_x_0_0_0_0.enable_axis_labels(True)
         self.qtgui_freq_sink_x_0_0_0_0.enable_control_panel(False)
-        
+
         if not True:
           self.qtgui_freq_sink_x_0_0_0_0.disable_legend()
-        
+
         if "complex" == "float" or "complex" == "msg_float":
           self.qtgui_freq_sink_x_0_0_0_0.set_plot_pos_half(not True)
-        
+
         labels = ['', '', '', '', '',
                   '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
@@ -218,25 +223,27 @@ class airbeam_test(gr.top_block, Qt.QWidget):
             self.qtgui_freq_sink_x_0_0_0_0.set_line_width(i, widths[i])
             self.qtgui_freq_sink_x_0_0_0_0.set_line_color(i, colors[i])
             self.qtgui_freq_sink_x_0_0_0_0.set_line_alpha(i, alphas[i])
-        
+
         self._qtgui_freq_sink_x_0_0_0_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0_0_0_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_0_0_0_win)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, '/tmp/payload.dat', False)
         self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
         self.beamforming_filter_payload_py_0 = beamforming.filter_payload_py('payload')
         self.beamforming_correlate_and_tag_py_0 = beamforming.correlate_and_tag_py(trainingSignal_size, trainingSignal_size + 400 + 256* 64 + 100, 2, data_files_path + "/trainingSig", 1, 0)
 
+
+
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.beamforming_correlate_and_tag_py_0, 0), (self.beamforming_filter_payload_py_0, 0))    
-        self.connect((self.beamforming_correlate_and_tag_py_0, 1), (self.blocks_complex_to_mag_0, 0))    
-        self.connect((self.beamforming_correlate_and_tag_py_0, 0), (self.qtgui_freq_sink_x_0_0_0_0, 0))    
-        self.connect((self.beamforming_correlate_and_tag_py_0, 0), (self.qtgui_time_sink_x_0_0_1_1_0_0, 0))    
-        self.connect((self.beamforming_filter_payload_py_0, 0), (self.blocks_file_sink_0, 0))    
-        self.connect((self.blocks_complex_to_mag_0, 0), (self.qtgui_time_sink_x_0_0_1_1_0_0_0, 0))    
-        self.connect((self.uhd_usrp_source_0, 0), (self.beamforming_correlate_and_tag_py_0, 0))    
+        self.connect((self.beamforming_correlate_and_tag_py_0, 0), (self.beamforming_filter_payload_py_0, 0))
+        self.connect((self.beamforming_correlate_and_tag_py_0, 1), (self.blocks_complex_to_mag_0, 0))
+        self.connect((self.beamforming_correlate_and_tag_py_0, 0), (self.qtgui_freq_sink_x_0_0_0_0, 0))
+        self.connect((self.beamforming_correlate_and_tag_py_0, 0), (self.qtgui_time_sink_x_0_0_1_1_0_0, 0))
+        self.connect((self.beamforming_filter_payload_py_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.blocks_complex_to_mag_0, 0), (self.qtgui_time_sink_x_0_0_1_1_0_0_0, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.beamforming_correlate_and_tag_py_0, 0))
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "airbeam_test")
@@ -257,7 +264,7 @@ class airbeam_test(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_1_1_0_0.set_samp_rate(self.samp_rate)
-        self.qtgui_freq_sink_x_0_0_0_0.set_frequency_range(900e6, self.samp_rate)
+        self.qtgui_freq_sink_x_0_0_0_0.set_frequency_range(1900e6, self.samp_rate)
 
     def get_data_files_path(self):
         return self.data_files_path
