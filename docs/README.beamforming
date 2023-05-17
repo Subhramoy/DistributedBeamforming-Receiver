@@ -28,6 +28,6 @@ Line#102 dst_dir = '/home/genesys/KRI_csi_data/flight_pattern'
 
 Update the destination directory for storing the CSI and extracted payload
 
-The corresponding .grc file for the beamforming receiver python script is: /beamforming_code/beamforming_receiver/gr-beamforming/examples/airbeam_receiver_test.grc
+The corresponding .grc file for the beamforming receiver python script is: examples/airbeam_receiver_test.grc
 
 this file can be opened with gnuradio-companion.
