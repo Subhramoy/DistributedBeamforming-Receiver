@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Offline Corr Test Rx
-# Generated: Thu Mar 14 16:51:34 2019
+# Generated: Thu Oct 31 23:25:39 2019
 ##################################################
 
 if __name__ == '__main__':
@@ -63,7 +63,7 @@ class offline_corr_test_rx(gr.top_block, Qt.QWidget):
         ##################################################
         self.trainingSignal_size = trainingSignal_size = 16456
         self.samp_rate = samp_rate = 32000
-        self.data_files_path = data_files_path = "/home/gokhan/gnu-radio/gr-beamforming/examples/data"
+        self.data_files_path = data_files_path = "/home/genesys/workarea-gnuradio/gnuradio/gr-beamforming/examples/data"
 
         ##################################################
         # Blocks
@@ -283,7 +283,7 @@ class offline_corr_test_rx(gr.top_block, Qt.QWidget):
         self.beamforming_matlab_file_payload_py_0_0 = beamforming.matlab_file_payload_py(data_files_path + "/trainingSig2")
         self.beamforming_matlab_file_payload_py_0 = beamforming.matlab_file_payload_py(data_files_path + "/trainingSig1")
         self.beamforming_filter_payload_py_0 = beamforming.filter_payload_py('payload')
-        self.beamforming_correlate_and_tag_py_0 = beamforming.correlate_and_tag_py(trainingSignal_size, trainingSignal_size + 400 + 256* 64 + 100, 2, data_files_path + "/trainingSig", 0, 0)
+        self.beamforming_correlate_and_tag_py_0 = beamforming.correlate_and_tag_py(trainingSignal_size, trainingSignal_size + 400 + 256* 64 + 100, 2, data_files_path + "/trainingSig", 1, 0)
 
 
 

@@ -226,7 +226,7 @@
     </param>
     <param>
       <key>num_Tx</key>
-      <value>2</value>
+      <value>3</value>
     </param>
     <param>
       <key>file_path</key>
@@ -257,7 +257,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(688, 848)</value>
+      <value>(504, 884)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -402,7 +402,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(976, 444)</value>
+      <value>(968, 444)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -415,6 +415,57 @@
     <param>
       <key>type</key>
       <value>complex</value>
+    </param>
+    <param>
+      <key>unbuffered</key>
+      <value>False</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_file_sink</key>
+    <param>
+      <key>append</key>
+      <value>False</value>
+    </param>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>file</key>
+      <value>/tmp/corr.dat</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(1072, 580)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_file_sink_0_0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>float</value>
     </param>
     <param>
       <key>unbuffered</key>
@@ -445,7 +496,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(896, 864)</value>
+      <value>(752, 872)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -480,7 +531,7 @@
     </param>
     <param>
       <key>fc</key>
-      <value>1900e6</value>
+      <value>925e6</value>
     </param>
     <param>
       <key>comment</key>
@@ -791,7 +842,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(871, 232)</value>
+      <value>(872, 200)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -1158,7 +1209,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(816, 592)</value>
+      <value>(776, 636)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -1525,7 +1576,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(504, 880)</value>
+      <value>(324, 816)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -1872,7 +1923,7 @@
     </param>
     <param>
       <key>center_freq0</key>
-      <value>uhd.tune_request(1900e6,1e6)</value>
+      <value>uhd.tune_request(925e6,1e6)</value>
     </param>
     <param>
       <key>dc_offs_enb0</key>
@@ -3028,7 +3079,7 @@
     </param>
     <param>
       <key>dev_addr</key>
-      <value>"serial=316E275"</value>
+      <value>"serial=3189F54"</value>
     </param>
     <param>
       <key>dev_args</key>
@@ -3064,7 +3115,7 @@
     </param>
     <param>
       <key>time_source0</key>
-      <value>external</value>
+      <value></value>
     </param>
     <param>
       <key>clock_source1</key>
@@ -3234,6 +3285,12 @@
   <connection>
     <source_block_id>beamforming_filter_payload_py_0</source_block_id>
     <sink_block_id>blocks_file_sink_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_complex_to_mag_0</source_block_id>
+    <sink_block_id>blocks_file_sink_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>

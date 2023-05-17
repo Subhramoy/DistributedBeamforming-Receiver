@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Csi Feedback Tx
-# Generated: Fri Oct 26 14:07:21 2018
+# Generated: Wed Jun 24 21:30:04 2020
 ##################################################
 
 if __name__ == '__main__':
@@ -214,8 +214,16 @@ class CSI_feedback_tx(gr.top_block, Qt.QWidget):
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_message_strobe_0 = blocks.message_strobe(pmt.PMT_T, 200)
         self.beamforming_multiply_by_variable_py_cc_1 = beamforming.multiply_by_variable_py_cc()
-        self.beamforming_matlab_file_payload_py_0 = beamforming.matlab_file_payload_py('/home/gokhan/gnu-radio/gr-beamforming/examples/data/payload')
-        self.beamforming_CSI_feedback_adapter_py_0 = beamforming.CSI_feedback_adapter_py('/home/gokhan/gnu-radio/gr-beamforming/examples/data/')
+        self.beamforming_matlab_file_payload_py_0 = beamforming.matlab_file_payload_py('/home/genesys/workarea-gnuradio/gnuradio/gr-beamforming/examples/data/payload')
+        self.beamforming_CSI_feedback_adapter_py_0 = beamforming.CSI_feedback_adapter_py(
+              1,
+              '/home/genesys/gnuradio/gr-beamforming/examples/data/weighttx5.bin',
+              1,
+              '224.3.29.71',
+              10000,
+              1,
+              0)
+
 
 
 
@@ -223,7 +231,6 @@ class CSI_feedback_tx(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.msg_connect((self.beamforming_CSI_feedback_adapter_py_0, 'beamweight'), (self.beamforming_multiply_by_variable_py_cc_1, 'beamweight'))
-        self.msg_connect((self.blocks_message_strobe_0, 'strobe'), (self.beamforming_CSI_feedback_adapter_py_0, 'read_file'))
         self.connect((self.beamforming_matlab_file_payload_py_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.beamforming_matlab_file_payload_py_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.beamforming_matlab_file_payload_py_0, 0), (self.qtgui_time_sink_x_0, 0))

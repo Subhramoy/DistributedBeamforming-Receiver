@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Data Beamforming Tx
-# Generated: Mon Jan 14 14:40:07 2019
+# Generated: Wed Jun 24 17:06:56 2020
 ##################################################
 
 if __name__ == '__main__':
@@ -257,14 +257,22 @@ class data_beamforming_tx(gr.top_block, Qt.QWidget):
         self.blocks_pdu_to_tagged_stream_0_1 = blocks.pdu_to_tagged_stream(blocks.byte_t, 'packet_len')
         self.blocks_pdu_to_tagged_stream_0_0 = blocks.pdu_to_tagged_stream(blocks.byte_t, 'packet_len')
         self.blocks_pdu_to_tagged_stream_0 = blocks.pdu_to_tagged_stream(blocks.byte_t, 'packet_len')
-        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((-390625e-8, ))
+        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((390625e-8, ))
         self.blocks_message_strobe_0 = blocks.message_strobe(pmt.PMT_T, 200)
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, '/home/gokhan/gnu-radio/gr-beamforming/examples/payload-afterWeight.bin', False)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, '/home/genesys/workarea-gnuradio/gnuradio/gr-beamforming/examples/payload-afterWeight.bin', False)
         self.blocks_file_sink_0.set_unbuffered(True)
         self.beamforming_payload_generator_cpp_0 = beamforming.payload_generator_cpp('currently_not_used', 1)
         self.beamforming_multiply_by_variable_py_cc_1 = beamforming.multiply_by_variable_py_cc()
-        self.beamforming_matlab_file_payload_py_0 = beamforming.matlab_file_payload_py('/home/gokhan/gnu-radio/gr-beamforming/examples/data/trainingSig1')
-        self.beamforming_CSI_feedback_adapter_py_0 = beamforming.CSI_feedback_adapter_py('/home/gokhan/gnu-radio/gr-beamforming/examples/data/weights_tx2.bin', 1, '224.3.29.71', '10000', '1')
+        self.beamforming_matlab_file_payload_py_0 = beamforming.matlab_file_payload_py('/home/genesys/workarea-gnuradio/gnuradio/gr-beamforming/examples/data/trainingSig1')
+        self.beamforming_CSI_feedback_adapter_py_0 = beamforming.CSI_feedback_adapter_py(
+              0,
+              '/home/genesys/workarea-gnuradio/gnuradio/gr-beamforming/examples/data/weights_tx3.bin',
+              1,
+              '224.3.29.71',
+              10000,
+              1,
+              0)
+
 
 
 

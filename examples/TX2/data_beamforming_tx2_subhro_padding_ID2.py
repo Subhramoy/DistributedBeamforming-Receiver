@@ -57,8 +57,8 @@ class data_beamforming_tx2(gr.top_block):
         		channels=range(1),
         	),
         )
-        self.uhd_usrp_sink_0.set_clock_source('gpsdo', 0)
-        self.uhd_usrp_sink_0.set_time_source('gpsdo', 0)
+        self.uhd_usrp_sink_0.set_clock_source('external', 0)
+        self.uhd_usrp_sink_0.set_time_source('external', 0)
         self.uhd_usrp_sink_0.set_samp_rate(samp_rate)
         self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
         self.uhd_usrp_sink_0.set_center_freq(uhd.tune_request(900e6, -1e6), 0)

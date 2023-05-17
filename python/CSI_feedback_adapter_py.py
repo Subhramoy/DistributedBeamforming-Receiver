@@ -206,6 +206,7 @@ class CSI_feedback_adapter_py(gr.basic_block):
     def default_csi_calculation(self, feedback):
         # Reconstructing channel estimation value in complex format
         # self.channel_est = [real, imaginary]
+	print("Hello")
         channel_est_complex = feedback
         #print channel_est_complex
         abs_channel_est_antennas = abs(channel_est_complex)

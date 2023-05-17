@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Airbeam Test
-# Generated: Mon Aug 19 17:31:11 2019
+# Generated: Thu Sep 24 22:44:06 2020
 ##################################################
 
 if __name__ == '__main__':
@@ -70,17 +70,16 @@ class airbeam_test(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-        	",".join(("serial=316E275", "")),
+        	",".join(("serial=3189F54", "")),
         	uhd.stream_args(
         		cpu_format="fc32",
         		channels=range(1),
         	),
         )
         self.uhd_usrp_source_0.set_clock_source('external', 0)
-        self.uhd_usrp_source_0.set_time_source('external', 0)
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
         self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
-        self.uhd_usrp_source_0.set_center_freq(uhd.tune_request(1900e6,1e6), 0)
+        self.uhd_usrp_source_0.set_center_freq(uhd.tune_request(925e6,1e6), 0)
         self.uhd_usrp_source_0.set_gain(70, 0)
         self.uhd_usrp_source_0.set_antenna('RX2', 0)
         self.uhd_usrp_source_0.set_bandwidth(400e3, 0)
@@ -186,7 +185,7 @@ class airbeam_test(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0_0_0_0 = qtgui.freq_sink_c(
         	256*8, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
-        	1900e6, #fc
+        	925e6, #fc
         	samp_rate, #bw
         	'Tx Signal', #name
         	1 #number of inputs
@@ -230,7 +229,7 @@ class airbeam_test(gr.top_block, Qt.QWidget):
         self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_complex_to_mag_0 = blocks.complex_to_mag(1)
         self.beamforming_filter_payload_py_0 = beamforming.filter_payload_py('payload')
-        self.beamforming_correlate_and_tag_py_0 = beamforming.correlate_and_tag_py(trainingSignal_size, trainingSignal_size + 400 + 256* 64 + 100, 2, data_files_path + "/trainingSig", 1, 0)
+        self.beamforming_correlate_and_tag_py_0 = beamforming.correlate_and_tag_py(trainingSignal_size, trainingSignal_size + 400 + 256* 64 + 100, 3, data_files_path + "/trainingSig", 1, 0)
 
 
 
@@ -264,7 +263,7 @@ class airbeam_test(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_1_1_0_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_1_1_0_0.set_samp_rate(self.samp_rate)
-        self.qtgui_freq_sink_x_0_0_0_0.set_frequency_range(1900e6, self.samp_rate)
+        self.qtgui_freq_sink_x_0_0_0_0.set_frequency_range(925e6, self.samp_rate)
 
     def get_data_files_path(self):
         return self.data_files_path

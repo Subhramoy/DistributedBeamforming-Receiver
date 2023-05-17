@@ -67,7 +67,10 @@ class correlate_and_tag_py(gr.sync_block):
         #
         self.log = gr.logger(str(__name__))
         self.log.set_level("INFO")
-
+	
+	#import ipdb;ipdb.set_trace()
+	logging.basicConfig(filename='/tmp/csi.log', filemode= 'w', level=logging.DEBUG)
+	self.csi_logger = logging.getLogger()
         self.debug = False
 
         """Set UDP SERVER"""
@@ -236,6 +239,8 @@ class correlate_and_tag_py(gr.sync_block):
                 peak_indices = self.get_peaks(x_cor_result)
 
                 print("Tx: {} - Max item index: {}, First Peak index: {}".format(tx_index+1, tag_index, peak_indices[0] ))
+		
+		#self.csi_logger.info([tx_index+1, tag_index, peak_indices[0]])
 
                 if peak_indices[0] > push_index:
                     push_index = peak_indices[0]
@@ -287,6 +292,7 @@ class correlate_and_tag_py(gr.sync_block):
                     )           )
                     """
                     channel_estimations[tx_index] = numpy.nanmean(numpy.divide(rec_gs, stored_gs, out=numpy.zeros_like(rec_gs), where=stored_gs!=0))
+		    
                     if self.debug: print("Tx: {} CSI: {}".format(tx_index+1, channel_estimations[tx_index] ))
 
                 else:
@@ -479,6 +485,9 @@ class correlate_and_tag_py(gr.sync_block):
 
     ## Feedback adapters
     def default_csi_feedback(self, channel_estimations):
+	#import ipdb;ipdb.set_trace()
+	print(channel_estimations)
+	self.csi_logger.info(channel_estimations)
         return channel_estimations
 
     def calculate_waterfilling_beamweights(self, channel_est):
